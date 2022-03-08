@@ -36,6 +36,7 @@ export class InputShell extends React.Component<Props> {
         document.addEventListener("keydown", this.handleKeypress.bind(this), false);
     }
     private handleKeypress(event: KeyboardEvent) {
+        //probably should use regex here rather than array
         if (approvedKeys.includes(event.key)) {
             this.addLetter(event.key.toLocaleUpperCase());
         }
