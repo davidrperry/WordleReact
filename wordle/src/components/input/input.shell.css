@@ -1,8 +1,18 @@
 
 .word-input{
     height: 29px;
+    font-weight: 700;
 }
 
 .input-tile{
     display: inline-block;
+}
+
+.invalid{
+    color: red;
+}
+
+input.invalid{
+    border-color: red;
+    border-width: 5px;
 }

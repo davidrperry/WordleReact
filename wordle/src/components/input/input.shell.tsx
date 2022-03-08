@@ -3,6 +3,7 @@ import { timeStamp } from "console";
 import React from "react";
 import { Letter } from "../../models/letter";
 import { LetterState } from "../../models/letter-state";
+import { words } from "../../shared/words";
 import { InputTile } from "./input-tile/input-tile";
 import './input.shell.css';
 
@@ -19,12 +20,15 @@ export class InputShell extends React.Component<Props> {
 
     state: {
         word: string
+        valid: boolean;
     }
+
 
     constructor(props: Props) {
         super(props);
         this.state = {
-            word: ''
+            word: '',
+            valid: true
         }
     }
 
@@ -63,8 +67,14 @@ export class InputShell extends React.Component<Props> {
     }
 
     private submit() {
+        if(this.validateWord(this.state.word)){
         this.props.onSubmit(this.state.word);
         this.setState({ ...this.state, word: '' });
+        }
+        else{
+            this.setState({...this.state, valid: false});
+            setTimeout(() => {this.setState({...this.state, valid: true})}, 2000)
+        }
     }
 
     private mapToLetter(value: string): Letter {
@@ -83,11 +93,17 @@ export class InputShell extends React.Component<Props> {
         return null;
     }
 
+    private validateWord(word: string): boolean{
+        return words.includes(word.toLocaleLowerCase());
+    }
+
     render(): React.ReactNode {
         return (<div className="input-panel">
-            <input className="word-input" type="text" maxLength={5} readOnly={true} placeholder="Word" onChange={this.submitWord.bind(this)} value={this.state.word}></input>
+            <input className={classNames({"word-input": true, invalid: !this.state.valid})}  type="text" maxLength={5} readOnly={true} placeholder="Word" onChange={this.submitWord.bind(this)} value={this.state.word}></input>
+            {
+               this.state.valid? null:  <p className="invalid">Invalid Word!</p>
+            }
             {/* keyboard start */}
-
             <div>
                 {["Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P"].map(x => {
                     return <InputTile letter={this.mapToLetter(x)} onClick={this.addLetter.bind(this)} key={x}></InputTile>
