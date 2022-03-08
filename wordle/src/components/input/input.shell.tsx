@@ -1,16 +1,24 @@
 import classNames from "classnames";
 import React from "react";
 import { Letter } from "../../models/letter";
+import { LetterState } from "../../models/letter-state";
 import { InputTile } from "./input-tile/input-tile";
 import './input.shell.css';
 
-export class InputShell extends React.Component<{ onSubmit: any }> {
+
+export type Props = {
+    onSubmit: (value: string) => void,
+    matchedLetters: Array<Letter>,
+    unmatchedLetters: Array<Letter>
+}
+
+export class InputShell extends React.Component<Props> {
 
     state: {
         word: string
     }
 
-    constructor(props: { onSubmit: any }) {
+    constructor(props: Props) {
         super(props);
         this.state = {
             word: ''
@@ -42,7 +50,19 @@ export class InputShell extends React.Component<{ onSubmit: any }> {
     }
 
     private mapToLetter(value: string): Letter {
-        return { value } as Letter;
+        return { value, state: this.getState(value) } as Letter;
+    }
+
+    private getState(value: string): LetterState | null {
+        const matched = this.props.matchedLetters.find(x => x.value.toLocaleLowerCase() === value.toLocaleLowerCase());
+        if(matched){
+            return matched.state;
+        }
+        const unmatched = this.props.unmatchedLetters.find(x => x.value.toLocaleLowerCase() === value.toLocaleLowerCase());
+        if(unmatched){
+            return unmatched.state;
+        }
+        return null;
     }
 
     render(): React.ReactNode {

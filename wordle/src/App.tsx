@@ -27,9 +27,8 @@ export class App extends React.Component {
     return (
       <div className="App">
         <div id="shell">
-        <UnmatchedLetters letters={this._state.unmatchedLetters}/>
           <GridShell guesses={this.state.internalGuesses} />
-          <InputShell onSubmit={this.submitGuess.bind(this)} />
+          <InputShell onSubmit={this.submitGuess.bind(this)} matchedLetters={this._state.matchedLetters} unmatchedLetters={this._state.unmatchedLetters} />
         </div>
       </div>
     );
@@ -58,9 +57,11 @@ export class App extends React.Component {
     this.setInitialState(word, index, guessLetter, letter);
     if (letter.state === LetterState.correct) {
       this.validateCorrectState(guessLetter, index, activeGuess, word);
+      this._state.addMatchedLetter(letter);
     }
     else if (letter.state === LetterState.partial) {
       this.validdatePartialState(letter, index, activeGuess, word);
+      this._state.addMatchedLetter(letter);
     }
     else{
       this._state.addUnmatchedLetter(letter);
