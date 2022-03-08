@@ -1,4 +1,5 @@
 import classNames from "classnames";
+import { timeStamp } from "console";
 import React from "react";
 import { Letter } from "../../models/letter";
 import { LetterState } from "../../models/letter-state";
@@ -11,6 +12,8 @@ export type Props = {
     matchedLetters: Array<Letter>,
     unmatchedLetters: Array<Letter>
 }
+
+const approvedKeys = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"];
 
 export class InputShell extends React.Component<Props> {
 
@@ -25,6 +28,21 @@ export class InputShell extends React.Component<Props> {
         }
     }
 
+    componentDidMount() {
+        document.addEventListener("keydown", this.handleKeypress.bind(this), false);
+    }
+    private handleKeypress(event: KeyboardEvent) {
+        if (approvedKeys.includes(event.key)) {
+            this.addLetter(event.key.toLocaleUpperCase());
+        }
+        if(event.key === "Backspace"){
+            this.deleteLetter();
+        }
+        if(event.key === "Enter" && this.state.word.length === 5){
+            this.submit();
+        }
+    }
+
     private submitWord(event: any) {
         this.setWord(event.target.value);
     }
@@ -34,13 +52,13 @@ export class InputShell extends React.Component<Props> {
         this.setState({ ...this.state, word: word });
     }
 
-    addLetter(letter: string) {
+    private addLetter(letter: string) {
         if (this.state.word.length !== 5) {
             this.setWord(`${this.state.word}${letter}`);
         }
     }
 
-    deleteLetter() {
+    private deleteLetter() {
         this.setWord(this.state.word.slice(0, this.state.word.length - 1));
     }
 
@@ -55,11 +73,11 @@ export class InputShell extends React.Component<Props> {
 
     private getState(value: string): LetterState | null {
         const matched = this.props.matchedLetters.find(x => x.value.toLocaleLowerCase() === value.toLocaleLowerCase());
-        if(matched){
+        if (matched) {
             return matched.state;
         }
         const unmatched = this.props.unmatchedLetters.find(x => x.value.toLocaleLowerCase() === value.toLocaleLowerCase());
-        if(unmatched){
+        if (unmatched) {
             return unmatched.state;
         }
         return null;
