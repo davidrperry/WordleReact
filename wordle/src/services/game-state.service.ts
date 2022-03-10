@@ -1,7 +1,7 @@
 import { words } from "../shared/words";
-import { Guess } from "./guess";
-import { Letter } from "./letter";
-import { LetterState } from "./letter-state";
+import { Guess } from "../models/guess";
+import { Letter } from "../models/letter";
+import { LetterState } from "../models/letter-state";
 
 export class GameState {
 
@@ -70,6 +70,7 @@ export class GameState {
 
     private initGuessess() {
         return [
+            this.defaultGuess(),
             this.defaultGuess(),
             this.defaultGuess(),
             this.defaultGuess(),
